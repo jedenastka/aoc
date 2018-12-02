@@ -101,6 +101,9 @@ int main() {
     while (getline(inputFile, line)) {
         input.push_back(line);
     }
-    std::cout << "The final checksum of the boxes is " << calculateChecksum(input) << ".\n";
-    std::cout << "The common letters between correct boxes are " << findCommonLetters(input) << ".\n";
+    std::string checksum = calculateChecksum(input);
+    std::string commonLetters = findCommonLetters(input);
+    std::cout << "The final checksum of the boxes is " << checksum << ".\n";
+    std::cout << "The common letters between correct boxes are " << commonLetters << ".\n";
+    std::cout << "Raw paste values:\n" << checksum << "\n" << commonLetters << "\n";
 }

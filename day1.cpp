@@ -51,6 +51,9 @@ int main() {
     for (std::vector<std::string>::iterator itr = input.begin(); itr != input.end(); ++itr) {
         rawInput.push_back(std::stoi(*itr));
     }
-    std::cout << "Final frequency is " << calculateFrequency(rawInput, 0) << ".\n";
-    std::cout << "Frequency that doubles is " << findDoubledFrequency(rawInput, 0) << ".\n";
+    int frequency = calculateFrequency(rawInput, 0);
+    int doubledFrequency = findDoubledFrequency(rawInput, 0);
+    std::cout << "Final frequency is " << frequency << ".\n";
+    std::cout << "Frequency that doubles is " << doubledFrequency << ".\n";
+    std::cout << "Raw paste values:\n" << frequency << "\n" << doubledFrequency << "\n";
 }
