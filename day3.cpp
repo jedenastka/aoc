@@ -33,8 +33,24 @@ int countClaimCollisions(std::vector<std::string> input) {
             }
         }
     }
+    std::vector<Field> collisions;
     for (std::vector<Field>::iterator itr = fields.begin(); itr != fields.end(); ++itr) {
-        
+        for (std::vector<Field>::iterator itr2 = fields.begin()+1; itr2 != fields.end(); ++itr2) {
+            if (*itr == *itr2) {
+                bool isDoubled = 0;
+                for (std::vector<Field>::iterator itr3 = collisions.begin(); itr3 != collisions.end(); ++itr3) {
+                    if (*itr2 == *itr3) {
+                        isDoubled = 1;
+                        break;
+                    }
+                }
+                if (isDoubled) {
+                    break;
+                }
+                collisions.push_back(*itr);
+                break;
+            }
+        }
     }
 }
 
