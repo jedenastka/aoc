@@ -3,6 +3,11 @@
 #include <vector>
 #include <utility>
 
+struct Field {
+    int ID;
+    std::pair<int, int> position;
+};
+
 struct RawInput {
     int ID;
     int startX;
@@ -11,9 +16,24 @@ struct RawInput {
     int sizeY;
 };
 
+RawInput praseInput(std::string input) {
+    //...
+}
+
 int countClaimCollisions(std::vector<std::string> input) {
+    std::vector<Field> fields;
     for (std::vector<std::string>::iterator itr = input.begin(); itr != input.end(); ++itr) {
         RawInput rawInput = praseInput(*itr);
+        for (int i = rawInput.startX; i < rawInput.startX + rawInput.sizeX; i++) {
+            for (int j = rawInput.startY; j < rawInput.startY + rawInput.sizeY; j++) {
+                Field field;
+                field.ID = rawInput.ID;
+                field.position = std::make_pair<int, int>(i, j);
+                fields.push_back(field);
+            }
+        }
+    }
+    for (std::vector<Field>::iterator itr = fields.begin(); itr != fields.end(); ++itr) {
         
     }
 }
