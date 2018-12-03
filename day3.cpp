@@ -6,6 +6,9 @@
 struct Field {
     int ID;
     std::pair<int, int> position;
+    bool operator== (const Field & right) {
+        return right.ID == ID && right.position == position;
+    }
 };
 
 struct RawInput {
@@ -17,7 +20,21 @@ struct RawInput {
 };
 
 RawInput praseInput(std::string input) {
-    //...
+    RawInput rawInput;
+    std::string data[4];
+    for (int i = 0, j = 0; i < 4; i++) {
+        while (input[j] != '\n' | input[j] == ' ') {
+            data[i] += input[j];
+            j++;
+        }
+        j++;
+    }
+    rawInput.ID = stoi(data[0].substr(1));
+    rawInput.startX = stoi(data[2].substr(0, data[2].find(",")));
+    rawInput.startY = stoi(data[2].substr(data[2].find(",") + 1, data[2].find(":")));
+    rawInput.sizeX = stoi(data[3].substr(0, data[3].find("x")));
+    rawInput.sizeY = stoi(data[3].substr(data[3].find("x") + 1));
+    return rawInput;
 }
 
 int countClaimCollisions(std::vector<std::string> input) {
@@ -28,7 +45,7 @@ int countClaimCollisions(std::vector<std::string> input) {
             for (int j = rawInput.startY; j < rawInput.startY + rawInput.sizeY; j++) {
                 Field field;
                 field.ID = rawInput.ID;
-                field.position = std::make_pair<int, int>(i, j);
+                field.position = std::make_pair(i, j);
                 fields.push_back(field);
             }
         }
@@ -52,6 +69,8 @@ int countClaimCollisions(std::vector<std::string> input) {
             }
         }
     }
+    int collisionCount = collisions.size();
+    return collisionCount;
 }
 
 int main() {
