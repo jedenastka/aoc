@@ -7,3 +7,5 @@ https://adventofcode.com/2018/
 In this repo I will publish my ways for resolving those problems. I don't know if I will have time for this event or not, but I will try to find it ;)
 
 I'm not uploading inputs, because of their big size.
+
+EDIT 25.12.2018: Officialy gave up. Archiving.
