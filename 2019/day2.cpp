@@ -78,44 +78,16 @@ void modify(std::vector<int> &intcode, int noun, int verb) {
 
 void bruteforceNounVerb(std::vector<int> intcode, int wantedValue, int &noun, int &verb) {
     std::vector<int> tmpIntcode;
-    for (int i = 0; i <= 99; i++) {
-        for (int j = 0; j <= 99; j++) { 
-            for (int k = 0; k < 2; k++) {
-                if (k == 0) {
-                    verb = i;
-                    noun = j;
-                } else {
-                    noun = j;
-                    verb = i;
-                }
-                tmpIntcode = intcode;
-                modify(tmpIntcode, noun, verb);
-                executeIntcode(tmpIntcode);
-                if (tmpIntcode[0] == wantedValue) {
-                    return;
-                }
+    for (noun = 0; noun <= 99; noun++) {
+        for (verb = 0; verb <= 99; verb++) { 
+            tmpIntcode = intcode;
+            modify(tmpIntcode, noun, verb);
+            executeIntcode(tmpIntcode);
+            if (tmpIntcode[0] == wantedValue) {
+                return;
             }
         }
     }
-    /*for (int i = 0; 1; i++) {
-        for (int j = 0; j <= i; j++) {
-            for (int k = 0; k < 2; k++) {
-                if (k == 0) {
-                    verb = i;
-                    noun = j;
-                } else {
-                    noun = j;
-                    verb = i;
-                }
-                std::vector<int> tmpintcode = intcode;
-                modify(tmpintcode, noun, verb);
-                executeIntcode(tmpIntcode);
-                if (tmpIntcode[0] == wantedValue) {
-                    return;
-                }
-            }
-        }
-    }*/
 }
 
 int main() {
