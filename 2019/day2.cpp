@@ -9,7 +9,8 @@ std::vector<int> parseIntcode(std::string intcodeString) {
         char current = intcodeString[i];
         if (current != ',') {
             tmp += current;
-        } else {
+        }
+        if (current == ',' || i == intcodeString.length() - 1) {
             intcode.push_back(stoi(tmp));
             tmp = "";
         }
@@ -75,5 +76,6 @@ int main() {
     getline(std::cin, intcodeString, '\n');
     std::vector<int> intcode = parseIntcode(intcodeString);
     executeIntcode(intcode);
-    printIntcode(intcode);
+    //printIntcode(intcode);
+    std::cout << intcode[0] << '\n';
 }
