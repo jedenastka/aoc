@@ -71,10 +71,16 @@ void printIntcode(std::vector<int> intcode) {
     }
 }
 
+void modify(std::vector<int> &intcode, int noun, int verb) {
+    intcode[1] = noun;
+    intcode[2] = verb;
+}
+
 int main() {
     std::string intcodeString;
     getline(std::cin, intcodeString, '\n');
     std::vector<int> intcode = parseIntcode(intcodeString);
+    modify(intcode, 12, 2);
     executeIntcode(intcode);
     //printIntcode(intcode);
     std::cout << intcode[0] << '\n';
