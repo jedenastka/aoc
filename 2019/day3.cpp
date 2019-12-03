@@ -2,6 +2,7 @@
 #include <utility>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 enum Direction {
     UP,
@@ -68,8 +69,19 @@ std::vector<std::pair<int, int>> cableCoordinates(Cable cable) {
     return coordinates;
 }
 
-void findCrossing() {
-    
+std::vector<std::pair<int, int>> findCrossing(Cable cable1, Cable cable2) {
+    std::vector<std::pair<int, int>> cable1Coordinates, cable2Coordinates;
+    std::vector<std::pair<int, int>> crossPoints;
+    cable1Coordinates = cableCoordinates(cable1);
+    cable2Coordinates = cableCoordinates(cable2);
+    for (auto cable1Pair: cable1Coordinates) {
+        for (auto cable2Pair: cable2Coordinates) {
+            if (cable1Pair == cable2Pair) {
+                crossPoints.push_back(cable1Pair);
+            }
+        }
+    }
+    return crossPoints;
 }
 
 int main() {
@@ -82,13 +94,7 @@ int main() {
     for (std::string cableString: cableStrings) {
         cables.push_back(parseCable(cableString));
     }
-    std::vector<std::vector<std::pair<int, int>>> coordinates;
-    for (Cable cable: cables) {
-        coordinates.push_back(cableCoordinates(cable));
-    }
-    for (auto i: coordinates) {
-        for (auto j: i) {
-            std::cout << std::get<0>(j) << ' ' << std::get<1>(j) << '\n';
-        }
+    for (auto i: findCrossing(cables[0], cables[1])) {
+        std::cout << std::get<0>(i) << ' ' << std::get<1>(i) << '\n';
     }
 }
