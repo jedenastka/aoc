@@ -2,6 +2,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <map>
 
 int ctoi(char ch) {
     return ch - '0';
@@ -48,25 +49,28 @@ bool checkPassword(int password, bool part2) {
     if (passwordString.length() != 6) {
         return 0;
     }
-    int inRow;
-    bool doubleDigit = 0;
+    std::map<char, int> groups;
     for (int i = 0; i < passwordString.length(); i++) {
         char digit = passwordString[i];
-        if (i > 0 && digit == passwordString[i - 1]) {
-            inRow++;
-            if (inRow == 2) {
-                doubleDigit = 1;
-            } else if (inRow > 2 && part2) {
-                return 0;
-            }
-        } else {
-            inRow = 1;
-        }
         if (i > 0 && ctoi(digit) < ctoi(passwordString[i - 1])) {
             return 0;
         }
+        if (groups.find(digit) != groups.end()) {
+            groups[digit]++;
+        } else {
+            groups[digit] = 1;
+        }
     }
-    return doubleDigit;
+    bool largeGroup = 0;
+    bool doubleDigit = 0;
+    for (std::map<char, int>::iterator itr = groups.begin(); itr != groups.end(); ++itr) {
+        if (itr->second == 2) {
+            doubleDigit = 1;
+        } else if (itr->second > 2 && part2) {
+            largeGroup = 1;
+        }
+    }
+    return (part2 && !largeGroup) || doubleDigit;
 }
 
 
