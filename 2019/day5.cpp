@@ -81,34 +81,11 @@ void printIntcode(std::vector<int> intcode) {
     }
 }
 
-void modify(std::vector<int> &intcode, int noun, int verb) {
-    intcode[1] = noun;
-    intcode[2] = verb;
-}
-
-void bruteforceNounVerb(std::vector<int> intcode, int wantedValue, int &noun, int &verb) {
-    std::vector<int> tmpIntcode;
-    for (noun = 0; noun <= 99; noun++) {
-        for (verb = 0; verb <= 99; verb++) { 
-            tmpIntcode = intcode;
-            modify(tmpIntcode, noun, verb);
-            executeIntcode(tmpIntcode);
-            if (tmpIntcode[0] == wantedValue) {
-                return;
-            }
-        }
-    }
-}
-
 int main() {
     std::string intcodeString;
     getline(std::cin, intcodeString, '\n');
     std::vector<int> intcode = parseIntcode(intcodeString);
     std::vector<int> newIntcode = intcode;
-    modify(newIntcode, 12, 2);
     executeIntcode(newIntcode);
-    //printIntcode(newIntcode);
-    int noun, verb;
-    bruteforceNounVerb(intcode, 19690720, noun, verb);
-    std::cout << newIntcode[0] << '\n' << 100 * noun + verb << '\n';
+    std::cout << newIntcode[0] << '\n';
 }
