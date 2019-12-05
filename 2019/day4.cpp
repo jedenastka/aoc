@@ -53,6 +53,7 @@ bool checkPassword(int password, bool part2) {
     for (int i = 0; i < passwordString.length(); i++) {
         char digit = passwordString[i];
         if (i > 0 && ctoi(digit) < ctoi(passwordString[i - 1])) {
+            //std::cout << "P: " << password << '\n';
             return 0;
         }
         if (groups.find(digit) != groups.end()) {
@@ -61,18 +62,19 @@ bool checkPassword(int password, bool part2) {
             groups[digit] = 1;
         }
     }
-    bool largeGroup = 0;
-    bool doubleDigit = 0;
     for (std::map<char, int>::iterator itr = groups.begin(); itr != groups.end(); ++itr) {
-        if (itr->second == 2) {
-            doubleDigit = 1;
-        } else if (itr->second > 2 && part2) {
-            largeGroup = 1;
+        if (!part2) {
+            if (itr->second >= 2) {
+                return 1;
+            }
+        } else {
+            if (itr->second == 2) {
+                return 1;
+            }
         }
     }
-    return (part2 && !largeGroup) || doubleDigit;
+    return 0;
 }
-
 
 int main() {
     std::string rangeString;
