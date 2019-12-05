@@ -18,45 +18,55 @@ std::vector<int> parseIntcode(std::string intcodeString) {
     return intcode;
 }
 
+int getParamCount(int optcode);
+
 void executeIntcode(std::vector<int> &intcode) {
     int optcode;
-    int input1, input2;
-    int output;
+    std::vector<int> params;
     int pos = 0;
+    int paramCount;
     for (int i = 0; i < intcode.size(); i++) {
         int current = intcode[i];
-        switch (pos) {
-            case 0:
-                optcode = current;
-                break;
-            case 1:
-                input1 = current;
-                break;
-            case 2:
-                input2 = current;
-                break;
-            case 3:
-                output = current;
-                break;
+        if (pos == 0) {
+            optcode = current;
+            paramCount = getParamCount(optcode);
         }
-        if (pos == 3 || optcode == 99) {
-            pos = 0;
-            switch (optcode) {
-                case 1:
-                    intcode[output] = intcode[input1] + intcode[input2];
-                    break;
-                case 2:
-                    intcode[output] = intcode[input1] * intcode[input2];
-                    break;
-                case 99:
-                    return;
-                default:
-                    std::cout << "Error at " << i << ": " << optcode << " is not a valid optcode.\n";
-                    break;
+        //std::cout << optcode << ' ' << paramCount << ' ' << pos << ' ' << current << '\n';
+        if (pos > 0 || paramCount == 0) {
+            params.push_back(current);
+            if (pos == paramCount) {
+                switch (optcode) {
+                    case 1:
+                       intcode[params[2]] = intcode[params[0]] + intcode[params[1]];
+                        break;
+                    case 2:
+                        intcode[params[2]] = intcode[params[0]] * intcode[params[1]];
+                        break;
+                    case 99:
+                        return;
+                    default:
+                        std::cout << "Error at " << i << ": " << optcode << " is not a valid optcode.\n";
+                        break;
+                }
+                pos = 0;
+                params.clear();
+                continue;
             }
-        } else {
-            pos++;
         }
+        pos++;
+    }
+}
+
+int getParamCount(int optcode) {
+    switch (optcode) {
+        case 1:
+            return 3;
+        case 2:
+            return 3;
+        case 99:
+            return 0;
+        default:
+            return -1;
     }
 }
 
@@ -97,6 +107,7 @@ int main() {
     std::vector<int> newIntcode = intcode;
     modify(newIntcode, 12, 2);
     executeIntcode(newIntcode);
+    //printIntcode(newIntcode);
     int noun, verb;
     bruteforceNounVerb(intcode, 19690720, noun, verb);
     std::cout << newIntcode[0] << '\n' << 100 * noun + verb << '\n';
