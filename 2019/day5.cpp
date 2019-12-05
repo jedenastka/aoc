@@ -51,7 +51,6 @@ void executeIntcode(std::vector<int> &intcode) {
             }
             paramModes.resize(paramModes.size() + (paramCount - paramModes.size()));
         }
-        std::cout << '\n';
         //std::cout << optcode << ' ' << paramCount << ' ' << pos << ' ' << current << '\n';
         if (pos > 0 || paramCount == 0) {
             params.push_back(current);
@@ -97,6 +96,7 @@ int getParamCount(int optcode) {
         case 99:
             return 0;
         default:
+            std::cout << "Error: Requested parameter code for non existent " << optcode << " optcode.\n";
             return -1;
     }
 }
@@ -107,10 +107,10 @@ int getParam(std::vector<int> intcode, std::vector<int> params, std::vector<int>
             return intcode[params[num]];
 
         case 1:
-            return num;
+            return params[num];
 
         default:
-            std::cout << "Error: mode " << mode << " is invalid.\n";
+            std::cout << "Error: mode " << modes[num] << " is invalid.\n";
             return -1;
     }
 }
