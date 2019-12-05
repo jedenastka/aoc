@@ -48,23 +48,24 @@ std::vector<std::pair<int, int>> cableCoordinates(Cable cable) {
     int x = 0;
     int y = 0;
     for (std::pair<Direction, int> step:cable) {
-        for (int i = 0; i < std::get<1>(step); i++) {
-            switch (std::get<0>(step)) {
-                case UP:
-                    y++;
-                    break;
-                case DOWN:
-                    y--;
-                    break;
-                case RIGHT:
-                    x++;
-                    break;
-                case LEFT:
-                    x--;
-                    break;
-            }
-            coordinates.push_back(std::make_pair(x, y));
+        //for (int i = 0; i < std::get<1>(step); i++) {
+        int len = std::get<1>(step);
+        switch (std::get<0>(step)) {
+            case UP:
+                y += len;
+                break;
+            case DOWN:
+                y -= len;
+                break;
+            case RIGHT:
+                x += len;
+                break;
+            case LEFT:
+                x -= len;
+                break;
         }
+        coordinates.push_back(std::make_pair(x, y));
+        //}
     }
     return coordinates;
 }
@@ -94,7 +95,7 @@ int main() {
     for (std::string cableString: cableStrings) {
         cables.push_back(parseCable(cableString));
     }
-    for (auto i: findCrossing(cables[0], cables[1])) {
+    for (auto i: cableCoordinates(cables[0])) {
         std::cout << std::get<0>(i) << ' ' << std::get<1>(i) << '\n';
     }
 }
