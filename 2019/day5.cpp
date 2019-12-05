@@ -28,7 +28,9 @@ void executeIntcode(std::vector<int> &intcode) {
     for (int i = 0; i < intcode.size(); i++) {
         int current = intcode[i];
         if (pos == 0) {
-            optcode = current;
+            std::string first = std::to_string(current);
+            optcode = stoi(first.substr(first.length() - 3, 2));
+            //optcode = current;
             paramCount = getParamCount(optcode);
         }
         //std::cout << optcode << ' ' << paramCount << ' ' << pos << ' ' << current << '\n';
@@ -41,6 +43,12 @@ void executeIntcode(std::vector<int> &intcode) {
                         break;
                     case 2:
                         intcode[params[2]] = intcode[params[0]] * intcode[params[1]];
+                        break;
+                    case 3:
+                        std::cin >> intcode[params[0]];
+                        break;
+                    case 4:
+                        std::cout << intcode[params[0]];
                         break;
                     case 99:
                         return;
@@ -63,6 +71,10 @@ int getParamCount(int optcode) {
             return 3;
         case 2:
             return 3;
+        case 3:
+            return 1;
+        case 4:
+            return 1;
         case 99:
             return 0;
         default:
@@ -87,5 +99,4 @@ int main() {
     std::vector<int> intcode = parseIntcode(intcodeString);
     std::vector<int> newIntcode = intcode;
     executeIntcode(newIntcode);
-    std::cout << newIntcode[0] << '\n';
 }
