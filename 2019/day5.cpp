@@ -132,5 +132,5 @@ int main() {
     std::vector<int> intcode = parseIntcode(intcodeString);
     std::vector<int> newIntcode = intcode;
     executeIntcode(newIntcode);
-    printIntcode(newIntcode);
+    //printIntcode(newIntcode);
 }
