@@ -67,7 +67,7 @@ std::map<std::pair<int, int>, int> countOccurrences(std::vector<Cable> cables) {
                         break;
                 }
                 std::pair<int, int> currentCoordinates(x, y);
-                if (std::find(cableFragments.begin(), cableFragments.end(), currentCoordinates) != cableFragments.end()) {
+                if (std::find(cableFragments.begin(), cableFragments.end(), currentCoordinates) == cableFragments.end()) {
                     if (occurrences.find(currentCoordinates) != occurrences.end()) {
                         occurrences[currentCoordinates]++;
                     } else {
@@ -85,7 +85,7 @@ std::vector<std::pair<int, int>> findCrossing(std::vector<Cable> cables) {
     std::map<std::pair<int, int>, int> occurrences = countOccurrences(cables);
     std::vector<std::pair<int, int>> crossPoints;
     for (auto itr = occurrences.begin(); itr != occurrences.end(); ++itr) {
-        std::cout << std::get<0>(itr->first) << ' ' << std::get<1>(itr->first) << ' ' << itr->second << '\n';
+        //std::cout << std::get<0>(itr->first) << ' ' << std::get<1>(itr->first) << ' ' << itr->second << '\n';
         if (itr->second == cables.size()) {
             crossPoints.push_back(itr->first);
         }
