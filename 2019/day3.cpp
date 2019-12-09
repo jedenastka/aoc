@@ -93,6 +93,12 @@ std::vector<std::pair<int, int>> findCrossing(std::vector<Cable> cables) {
     return crossPoints;
 }
 
+int manhattanDistance(std::pair<int, int> a, std::pair<int, int> b) {
+    int xDistance = std::get<0>(b) - std::get<0>(a);
+    int yDistance = std::get<1>(b) - std::get<1>(a);
+    return xDistance + yDistance;
+}
+
 int main() {
     std::string line;
     std::vector<std::string> cableStrings;
@@ -104,6 +110,6 @@ int main() {
         cables.push_back(parseCable(cableString));
     }
     for (auto i: findCrossing(cables)) {
-        std::cout << i.first << ' ' << i.second << '\n';
+        std::cout << manhattanDistance(std::make_pair(0, 0), std::make_pair(i.first, i.second)) << '\n';
     }
 }
