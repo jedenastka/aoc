@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <cmath>
 
 enum Direction {
     UP,
@@ -93,10 +94,21 @@ std::vector<std::pair<int, int>> findCrossing(std::vector<Cable> cables) {
     return crossPoints;
 }
 
+int substractSmallerFromBigger(int a, int b);
+
 int manhattanDistance(std::pair<int, int> a, std::pair<int, int> b) {
-    int xDistance = std::get<0>(b) - std::get<0>(a);
-    int yDistance = std::get<1>(b) - std::get<1>(a);
+    
+    int xDistance = substractSmallerFromBigger(std::get<0>(a), std::get<0>(b));
+    int yDistance = substractSmallerFromBigger(std::get<1>(a), std::get<1>(b));
     return xDistance + yDistance;
+}
+
+int substractSmallerFromBigger(int a, int b) {
+    if (a > b) {
+        return a - b;
+    } else {
+        return b - a;
+    }
 }
 
 int findSmallest(std::vector<int> numbers);
