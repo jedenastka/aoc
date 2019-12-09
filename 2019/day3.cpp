@@ -99,6 +99,26 @@ int manhattanDistance(std::pair<int, int> a, std::pair<int, int> b) {
     return xDistance + yDistance;
 }
 
+int findSmallest(std::vector<int> numbers);
+
+int closestCross(std::vector<Cable> cables) {
+    std::vector<int> distances;
+    for (auto i: findCrossing(cables)) {
+        distances.push_back(manhattanDistance(std::make_pair(0, 0), std::make_pair(i.first, i.second)));
+    }
+    return findSmallest(distances);
+}
+
+int findSmallest(std::vector<int> numbers) {
+    int smallest = numbers[0];
+    for (int i: numbers) {
+        if (i < smallest) {
+            smallest = i;
+        }
+    }
+    return smallest;
+}
+
 int main() {
     std::string line;
     std::vector<std::string> cableStrings;
@@ -109,7 +129,5 @@ int main() {
     for (std::string cableString: cableStrings) {
         cables.push_back(parseCable(cableString));
     }
-    for (auto i: findCrossing(cables)) {
-        std::cout << manhattanDistance(std::make_pair(0, 0), std::make_pair(i.first, i.second)) << '\n';
-    }
+    std::cout << closestCross(cables) << '\n';
 }
