@@ -22,9 +22,13 @@ std::vector<int> parseIntcode(std::string intcodeString) {
     return intcode;
 }
 
+
+
 int getParamCount(int optcode);
 
 int getParam(std::vector<int> intcode, std::vector<int> params, std::vector<int> modes, int num);
+
+void printIntcode(std::vector<int> intcode);
 
 void executeIntcode(std::vector<int> &intcode) {
     int optcode;
@@ -51,10 +55,21 @@ void executeIntcode(std::vector<int> &intcode) {
             }
             paramModes.resize(paramModes.size() + (paramCount - paramModes.size()));
         }
-        //std::cout << optcode << ' ' << paramCount << ' ' << pos << ' ' << current << '\n';
         if (pos > 0 || paramCount == 0) {
             params.push_back(current);
             if (pos == paramCount) {
+                /*std::cout << optcode << ' ';
+                for (int i: params) {
+                    std::cout << i << ' ';
+                }
+                for (int i: paramModes) {
+                    std::cout << i << ' ';
+                }
+                std::cout << '\n';
+                if (i < 5) {
+                    //printIntcode(intcode);
+                }
+                */
                 switch (optcode) {
                     case 1:
                         intcode[params[2]] = getParam(intcode, params, paramModes, 0) + getParam(intcode, params, paramModes, 1);
@@ -66,7 +81,7 @@ void executeIntcode(std::vector<int> &intcode) {
                         std::cin >> intcode[params[0]];
                         break;
                     case 4:
-                        std::cout << getParam(intcode, params, paramModes, 0);
+                        std::cout << getParam(intcode, params, paramModes, 0) << '\n';
                         break;
                     case 99:
                         return;
@@ -132,5 +147,5 @@ int main() {
     std::vector<int> intcode = parseIntcode(intcodeString);
     std::vector<int> newIntcode = intcode;
     executeIntcode(newIntcode);
-    printIntcode(newIntcode);
+    //printIntcode(newIntcode);
 }
