@@ -59,17 +59,24 @@ std::vector<Cable> parseInput(std::vector<std::string> input) {
             }
             pos++;
         }
-        rawInput.push_back(rawInputLine);
+        cables.push_back(cable);
     }
-    return rawInput;
+    return cables;
 }
 
+std::pair<int, int> findIntersections(std::vector<std::vector<Turn>> rawInput);
+
 std::pair<int, int> findClosestIntersection(std::vector<std::vector<Turn>> rawInput) {
-    std::map<std::pair<int, int>, int> occurenceCount = countOccurences(rawInput);
     std::vector<std::pair<int, int>> intersections;
     for (auto i: occurenceCount) {
         if (i.second == 3) {
-            
+            //
+        }
+    }
+}
+
+std::pair<int, int> findIntersections(std::vector<std::vector<Turn>> rawInput) {
+    std::map<std::pair<int, int>, int> occurenceCount = countOccurences(rawInput);
 }
 
 int main() {
