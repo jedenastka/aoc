@@ -17,6 +17,11 @@ struct Turn {
     int steps;
 };
 
+struct PointData {
+    std::vector<int> cables;
+    std::vector<int> distances;
+};
+
 typedef std::vector<Turn> Cable;
 
 std::vector<Cable> parseInput(std::vector<std::string> input) {
@@ -65,15 +70,15 @@ std::vector<Cable> parseInput(std::vector<std::string> input) {
     return cables;
 }
 
-std::vector<std::pair<int, int>> findIntersections(std::vector<Cable> cables);
+std::map<std::pair<int, int>, PointData> findIntersections(std::vector<Cable> cables);
 
 int manhattanDistance(std::pair<int, int> a, std::pair<int, int> b);
 
-int findClosestIntersectionDistance(std::vector<Cable> cables) {
-    std::vector<std::pair<int, int>> intersections = findIntersections(cables);
+int manhattanDistanceToIntersectionWithLeastManhattanDistance(std::vector<Cable> cables) {
+    std::map<std::pair<int, int>, PointData> intersections = findIntersections(cables);
     int leastDistance = -1;
     for (auto intersection: intersections) {
-        int distance = manhattanDistance(std::make_pair(0, 0), intersection);
+        int distance = manhattanDistance(std::make_pair(0, 0), intersection.first);
         if (distance < leastDistance || leastDistance == -1) {
             leastDistance = distance;
         }
@@ -81,30 +86,31 @@ int findClosestIntersectionDistance(std::vector<Cable> cables) {
     return leastDistance;
 }
 
-std::map<std::pair<int, int>, std::vector<int>> mapOccurences(std::vector<Cable> cables);
+std::map<std::pair<int, int>, PointData> mapOccurences(std::vector<Cable> cables);
 
-std::vector<std::pair<int, int>> findIntersections(std::vector<Cable> cables) {
-    std::map<std::pair<int, int>, std::vector<int>> occurenceMap = mapOccurences(cables);
-    std::vector<std::pair<int, int>> intersections;
+std::map<std::pair<int, int>, PointData> findIntersections(std::vector<Cable> cables) {
+    std::map<std::pair<int, int>, PointData> occurenceMap = mapOccurences(cables);
+    std::map<std::pair<int, int>, PointData> intersections;
     for (auto i: occurenceMap) {
         int crossCounter = 0;
         for (int j = 1; j <= cables.size(); ++j) {
-            if (std::find(i.second.begin(), i.second.end(), j) != i.second.end()) {
+            if (std::find(i.second.cables.begin(), i.second.cables.end(), j) != i.second.cables.end()) {
                 ++crossCounter;
             }
         }
         if (crossCounter == cables.size()) {
-            intersections.push_back(i.first);
+            intersections[i.first] = i.second;
         }
     }
     return intersections;
 }
 
-std::map<std::pair<int, int>, std::vector<int>> mapOccurences(std::vector<Cable> cables) {
-    std::map<std::pair<int, int>, std::vector<int>> occurencesMap;
+std::map<std::pair<int, int>, PointData> mapOccurences(std::vector<Cable> cables) {
+    std::map<std::pair<int, int>, PointData> occurencesMap;
     for (int i = 1; i <= cables.size(); ++i) {
         int x = 0;
         int y = 0;
+        int dist = 0;
         for (Turn turn: cables[i - 1]) {
             for (int j = 0; j < turn.steps; ++j) {
                 switch (turn.direction) {
@@ -121,7 +127,8 @@ std::map<std::pair<int, int>, std::vector<int>> mapOccurences(std::vector<Cable>
                         x--;
                         break;
                 }
-                occurencesMap[std::make_pair(x, y)].push_back(i);
+                occurencesMap[std::make_pair(x, y)].cables.push_back(i);
+                occurencesMap[std::make_pair(x, y)].distances.push_back(++dist);
             }
         }
     }
@@ -144,6 +151,36 @@ int substractSmallerFromBigger(int a, int b) {
     }
 }
 
+int sum(std::vector<int> components);
+
+int combinedDistanceToIntersectionWithLeastCombinedDistance(std::vector<Cable> cables) { 
+    std::map<std::pair<int, int>, PointData> intersections = findIntersections(cables);
+    int leastDistance = -1;
+    for (auto intersection: intersections) {
+        std::vector<int> firstCrossDistances;
+        for (int i = 1; i <= cables.size(); ++i) {
+            for (int j = 0; j < intersection.second.cables.size(); ++j) {
+                if (intersection.second.cables[j] == i) {
+                    firstCrossDistances.push_back(intersection.second.distances[j]);
+                }
+            }
+        }
+        int combinedDistance = sum(firstCrossDistances);
+        if (combinedDistance < leastDistance || leastDistance == -1) {
+            leastDistance = combinedDistance;
+        }
+    }
+    return leastDistance;
+}
+
+int sum(std::vector<int> components) {
+    int result = 0;
+    for (int i: components) {
+        result += i;
+    }
+    return result;
+}
+
 int main() {
     std::vector<std::string> input;
     for (int i = 0; i < 2; ++i) {
@@ -152,5 +189,5 @@ int main() {
         input.push_back(inputLine);
     }
     std::vector<Cable> cables = parseInput(input);
-    std::cout <<  findClosestIntersectionDistance(cables) << '\n';
+    std::cout << manhattanDistanceToIntersectionWithLeastManhattanDistance(cables) << '\n' << combinedDistanceToIntersectionWithLeastCombinedDistance(cables) << '\n';
 }
