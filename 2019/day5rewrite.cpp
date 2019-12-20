@@ -25,24 +25,34 @@ std::vector<int> parseIntcode(std::string intcodeString) {
 
 int getParamCount(int optcode);
 
+void executeCommand(Command command, std::vector<int> &intcode);
+
 std::vector<int> executeIntcode(std::vector<int> intcode) {
     for (int pointer = 0; pointer < intcode.size(); ++pointer) {
         Command command;
         command.optcode = intcode[pointer];
         for (int i = 0; i < getParamCount(command.optcode); ++i) {
-            command.params.push_back(intcode[pointer]);
-            ++pointer;
+            command.params.push_back(intcode[++pointer]);
         }
+        executeCommand(command, intcode);
     }
     return intcode;
+}
+
+void executeCommand(Command command, std::vector<int> &intcode) {
+    std::cout << command.optcode << ' ';
+    for (int i: command.params) {
+        std::cout << i << ' ';
+    }
+    std::cout << '\n';
 }
 
 int getParamCount(int optcode) {
     switch (optcode) {
         case 1:
-            return 2;
+            return 3;
         case 2:
-            return 2;
+            return 3;
         case 3:
             return 1;
         case 4:
