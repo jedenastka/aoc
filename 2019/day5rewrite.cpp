@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <string>
+#include <utility>
 
 struct Command {
     int optcode;
@@ -27,10 +29,14 @@ int getParamCount(int optcode);
 
 void executeCommand(Command command, std::vector<int> &intcode);
 
+std::pair<int, std::vector<int>> extractFirstPosition(int firstPosition);
+
 std::vector<int> executeIntcode(std::vector<int> intcode) {
     for (int pointer = 0; pointer < intcode.size(); ++pointer) {
+        std::pair<int, std::vector<int>> extracted = extractFirstPosition(intcode[pointer]);
         Command command;
-        command.optcode = intcode[pointer];
+        command.optcode = std::get<0>(extracted);
+        command.modes = std::get<1>(extracted);
         for (int i = 0; i < getParamCount(command.optcode); ++i) {
             command.params.push_back(intcode[++pointer]);
         }
@@ -42,6 +48,10 @@ std::vector<int> executeIntcode(std::vector<int> intcode) {
 void executeCommand(Command command, std::vector<int> &intcode) {
     std::cout << command.optcode << ' ';
     for (int i: command.params) {
+        std::cout << i << ' ';
+    }
+    std::cout << "M: ";
+    for (int i: command.modes) {
         std::cout << i << ' ';
     }
     std::cout << '\n';
@@ -63,6 +73,45 @@ int getParamCount(int optcode) {
             std::cout << "Error: requested param count for not existent opcode " << optcode << ".\n";
             exit(1);
     }
+}
+
+int chtoi(char ch);
+
+std::string reverse(std::string str);
+
+std::pair<int, std::vector<int>> extractFirstPosition(int firstPosition) {
+    std::string firstPositionStr = std::to_string(firstPosition);
+    int firstPositionLen = firstPositionStr.length();
+    std::string optcodeString; // = stoi(firstPositionStr.substr(firstPositionStr.length() - 1 - 2, 2));
+    std::vector<int> modes;
+    for (int i = firstPositionLen - 1; i >= 0; --i) {
+        if (i > firstPositionLen - 1 - 2) {
+            optcodeString += firstPositionStr[i];
+        } else {
+            modes.push_back(chtoi(firstPositionStr[i]));
+        }
+    }
+    optcodeString = reverse(optcodeString);
+    int optcode = stoi(optcodeString);
+    /*for (int i = firstPositionStr.length() - 1 - 3; i >= 0; --i) {
+        modes.push_back(firstPositionStr[i]);
+    }*/
+    while (getParamCount(optcode) - modes.size() > 0) {
+        modes.push_back(0);
+    }
+    return std::make_pair(optcode, modes);
+}
+
+int chtoi(char ch) {
+    return ch - '0';
+}
+
+std::string reverse(std::string str) {
+    std::string reversedStr;
+    for (int i = str.length() - 1; i >= 0; --i) {
+        reversedStr += str[i];
+    }
+    return reversedStr;
 }
 
 int main() {
