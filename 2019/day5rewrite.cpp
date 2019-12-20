@@ -75,7 +75,7 @@ bool executeCommand(Command command, std::vector<int> &intcode) {
             break;
 
         case 4:
-            std::cout << getParam(0, command, intcode);
+            std::cout << getParam(0, command, intcode) << '\n';
             break;
 
         case 99:
@@ -84,7 +84,6 @@ bool executeCommand(Command command, std::vector<int> &intcode) {
 
         default:
             std::cout << "Error: tried to execute not exsistent optcode " << command.optcode << ".\n";
-            printIntcode(intcode);
             exit(1);
     }
     return 0;
@@ -160,5 +159,4 @@ int main() {
     getline(std::cin, intcodeString, '\n');
     std::vector<int> intcode = parseIntcode(intcodeString);
     executeIntcode(intcode);
-    printIntcode(intcode);
 }
