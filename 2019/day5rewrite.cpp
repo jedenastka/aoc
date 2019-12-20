@@ -38,7 +38,7 @@ std::vector<int> parseIntcode(std::string intcodeString) {
 
 int getParamCount(int optcode);
 
-bool executeCommand(Command command, std::vector<int> &intcode);
+bool executeCommand(Command command, std::vector<int> &intcode, int &pointer);
 
 std::pair<int, std::vector<int>> extractFirstPosition(int firstPosition);
 
@@ -51,7 +51,7 @@ std::vector<int> executeIntcode(std::vector<int> intcode) {
         for (int i = 0; i < getParamCount(command.optcode); ++i) {
             command.params.push_back(intcode[++pointer]);
         }
-        if (executeCommand(command, intcode)) {
+        if (executeCommand(command, intcode, pointer)) {
             break;
         }
     }
@@ -60,28 +60,39 @@ std::vector<int> executeIntcode(std::vector<int> intcode) {
 
 int getParam(int param, Command command, std::vector<int> &intcode);
 
-bool executeCommand(Command command, std::vector<int> &intcode) {
+bool executeCommand(Command command, std::vector<int> &intcode, int &pointer) {
     switch (command.optcode) {
         case 1:
             intcode[command.params[2]] = getParam(0, command, intcode) + getParam(1, command, intcode);
             break;
-        
         case 2:
             intcode[command.params[2]] = getParam(0, command, intcode) * getParam(1, command, intcode);
             break;
-
         case 3:
             std::cin >> intcode[command.params[0]];
             break;
-
         case 4:
             std::cout << getParam(0, command, intcode) << '\n';
             break;
-
+        case 5:
+            if (getParam(0, command, intcode)) {
+                pointer = intcode[command.params[1]];
+            }
+            break;
+        case 6:
+            if (!getParam(0, command, intcode)) {
+                pointer = intcode[command.params[1]];
+            }
+            break;
+        case 7:
+            intcode[command.params[2]] = getParam(0, command, intcode) < getParam(1, command, intcode);
+            break;
+        case 8:
+            intcode[command.params[2]] = getParam(0, command, intcode) == getParam(1, command, intcode);
+            break;
         case 99:
             return 1;
             break;
-
         default:
             std::cout << "Error: tried to execute not exsistent optcode " << command.optcode << ".\n";
             exit(1);
@@ -110,6 +121,14 @@ int getParamCount(int optcode) {
             return 1;
         case 4:
             return 1;
+        case 5:
+            return 2;
+        case 6: 
+            return 2;
+        case 7:
+            return 3;
+        case 8:
+            return 3;
         case 99:
             return 0;
         default:
