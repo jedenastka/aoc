@@ -9,6 +9,17 @@ struct Command {
     std::vector<int> modes;
 };
 
+void printIntcode(std::vector<int> intcode) {
+    for (int i = 0; i < intcode.size(); i++) {
+        std::cout << intcode[i];
+        if (i == intcode.size() - 1) {
+            std::cout << '\n';
+        } else {
+            std::cout << ',';
+        }
+    }
+}
+
 std::vector<int> parseIntcode(std::string intcodeString) {
     std::vector<int> intcode;
     std::string tmp;
@@ -40,19 +51,23 @@ std::vector<int> executeIntcode(std::vector<int> intcode) {
         for (int i = 0; i < getParamCount(command.optcode); ++i) {
             command.params.push_back(intcode[++pointer]);
         }
-        executeCommand(command, intcode);
+        if (executeCommand(command, intcode)) {
+            break;
+        }
     }
     return intcode;
 }
 
+int getParam(int param, Command command, std::vector<int> &intcode);
+
 bool executeCommand(Command command, std::vector<int> &intcode) {
     switch (command.optcode) {
         case 1:
-            intcode[command.params[2]] = intcode[command.params[0]] + intcode[command.params[1]];
+            intcode[command.params[2]] = getParam(0, command, intcode) + getParam(1, command, intcode);
             break;
         
         case 2:
-            intcode[command.params[2]] = intcode[command.params[0]] * intcode[command.params[1]];
+            intcode[command.params[2]] = getParam(0, command, intcode) * getParam(1, command, intcode);
             break;
 
         case 3:
@@ -60,7 +75,7 @@ bool executeCommand(Command command, std::vector<int> &intcode) {
             break;
 
         case 4:
-            std::cout << intcode[command.params[0]];
+            std::cout << getParam(0, command, intcode);
             break;
 
         case 99:
@@ -69,7 +84,20 @@ bool executeCommand(Command command, std::vector<int> &intcode) {
 
         default:
             std::cout << "Error: tried to execute not exsistent optcode " << command.optcode << ".\n";
+            printIntcode(intcode);
             exit(1);
+    }
+    return 0;
+}
+
+int getParam(int param, Command command, std::vector<int> &intcode) {
+    if (command.modes[param] == 0) {
+        return intcode[command.params[param]];
+    } else if (command.modes[param] == 1) {
+        return command.params[param];
+    } else {
+        std::cout << "Error: mode " << command.modes[param] << " does not exist.\n";
+        exit(1);
     }
 }
 
@@ -98,7 +126,7 @@ std::string reverse(std::string str);
 std::pair<int, std::vector<int>> extractFirstPosition(int firstPosition) {
     std::string firstPositionStr = std::to_string(firstPosition);
     int firstPositionLen = firstPositionStr.length();
-    std::string optcodeString; // = stoi(firstPositionStr.substr(firstPositionStr.length() - 1 - 2, 2));
+    std::string optcodeString;
     std::vector<int> modes;
     for (int i = firstPositionLen - 1; i >= 0; --i) {
         if (i > firstPositionLen - 1 - 2) {
@@ -109,9 +137,6 @@ std::pair<int, std::vector<int>> extractFirstPosition(int firstPosition) {
     }
     optcodeString = reverse(optcodeString);
     int optcode = stoi(optcodeString);
-    /*for (int i = firstPositionStr.length() - 1 - 3; i >= 0; --i) {
-        modes.push_back(firstPositionStr[i]);
-    }*/
     while (getParamCount(optcode) - modes.size() > 0) {
         modes.push_back(0);
     }
@@ -135,4 +160,5 @@ int main() {
     getline(std::cin, intcodeString, '\n');
     std::vector<int> intcode = parseIntcode(intcodeString);
     executeIntcode(intcode);
+    printIntcode(intcode);
 }
