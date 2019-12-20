@@ -27,7 +27,7 @@ std::vector<int> parseIntcode(std::string intcodeString) {
 
 int getParamCount(int optcode);
 
-void executeCommand(Command command, std::vector<int> &intcode);
+bool executeCommand(Command command, std::vector<int> &intcode);
 
 std::pair<int, std::vector<int>> extractFirstPosition(int firstPosition);
 
@@ -45,16 +45,32 @@ std::vector<int> executeIntcode(std::vector<int> intcode) {
     return intcode;
 }
 
-void executeCommand(Command command, std::vector<int> &intcode) {
-    std::cout << command.optcode << ' ';
-    for (int i: command.params) {
-        std::cout << i << ' ';
+bool executeCommand(Command command, std::vector<int> &intcode) {
+    switch (command.optcode) {
+        case 1:
+            intcode[command.params[2]] = intcode[command.params[0]] + intcode[command.params[1]];
+            break;
+        
+        case 2:
+            intcode[command.params[2]] = intcode[command.params[0]] * intcode[command.params[1]];
+            break;
+
+        case 3:
+            std::cin >> intcode[command.params[0]];
+            break;
+
+        case 4:
+            std::cout << intcode[command.params[0]];
+            break;
+
+        case 99:
+            return 1;
+            break;
+
+        default:
+            std::cout << "Error: tried to execute not exsistent optcode " << command.optcode << ".\n";
+            exit(1);
     }
-    std::cout << "M: ";
-    for (int i: command.modes) {
-        std::cout << i << ' ';
-    }
-    std::cout << '\n';
 }
 
 int getParamCount(int optcode) {
