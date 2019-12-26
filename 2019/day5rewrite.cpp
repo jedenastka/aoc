@@ -87,12 +87,12 @@ bool executeCommand(Command command, std::vector<int> &intcode, int &pointer) {
             break;
         case 5:
             if (getParam(0, command, intcode)) {
-                pointer = intcode[command.params[1]];
+                pointer = getParam(1, command, intcode);
             }
             break;
         case 6:
             if (!getParam(0, command, intcode)) {
-                pointer = intcode[command.params[1]];
+                pointer = getParam(1, command, intcode);
                 #ifdef DEBUG
                 std::cout << pointer << '\n';
                 #endif
