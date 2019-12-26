@@ -3,6 +3,8 @@
 #include <string>
 #include <utility>
 
+//#define DEBUG
+
 struct Command {
     int optcode;
     std::vector<int> params;
@@ -43,7 +45,11 @@ bool executeCommand(Command command, std::vector<int> &intcode, int &pointer);
 std::pair<int, std::vector<int>> extractFirstPosition(int firstPosition);
 
 std::vector<int> executeIntcode(std::vector<int> intcode) {
-    for (int pointer = 0; pointer < intcode.size(); ++pointer) {
+    for (int pointer = 0; pointer < intcode.size();) {
+        #ifdef DEBUG
+        printIntcode(intcode);
+        std::cout << pointer << '\n';
+        #endif
         std::pair<int, std::vector<int>> extracted = extractFirstPosition(intcode[pointer]);
         Command command;
         command.optcode = std::get<0>(extracted);
@@ -51,8 +57,13 @@ std::vector<int> executeIntcode(std::vector<int> intcode) {
         for (int i = 0; i < getParamCount(command.optcode); ++i) {
             command.params.push_back(intcode[++pointer]);
         }
+        int oldPointer = pointer;
         if (executeCommand(command, intcode, pointer)) {
             break;
+        }
+        // Don't move pointer if it jumped during execution of command.
+        if (pointer == oldPointer) {
+            ++pointer;
         }
     }
     return intcode;
@@ -82,6 +93,9 @@ bool executeCommand(Command command, std::vector<int> &intcode, int &pointer) {
         case 6:
             if (!getParam(0, command, intcode)) {
                 pointer = intcode[command.params[1]];
+                #ifdef DEBUG
+                std::cout << pointer << '\n';
+                #endif
             }
             break;
         case 7:
