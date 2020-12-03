@@ -42,6 +42,9 @@ int main() {
                 case '#':
                     position = 1;
                     break;
+
+                default:
+                    continue;
             }
             row.push_back(position);
         }
