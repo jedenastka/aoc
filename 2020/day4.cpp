@@ -2,7 +2,6 @@
 #include <string>
 #include <map>
 #include <regex>
-#include <iterator>
 
 typedef std::map<std::string, std::string> Passport;
 
@@ -51,12 +50,14 @@ bool isValid2(Passport passport) {
         && stoi(passport["byr"]) <= 2002)) {
         return false;
     }
+
     if (!(passport.find("iyr") != passport.end()
         && isNumeric(passport["iyr"])
         && stoi(passport["iyr"]) >= 2010
         && stoi(passport["iyr"]) <= 2020)) {
         return false;
     }
+
     if (!(passport.find("eyr") != passport.end()
         && isNumeric(passport["eyr"])
         && stoi(passport["eyr"]) >= 2020
